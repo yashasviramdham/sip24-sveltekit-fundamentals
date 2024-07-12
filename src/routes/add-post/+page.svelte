@@ -1,13 +1,74 @@
-<script>
-    let files = null;
-</script>
-
 <header class="bg-white py-4 shadow-md sticky top-0 z-10">
     <div class="container mx-auto px-4 flex justify-between items-center">
         <h1 class="text-2xl font-bold font-['Comic_Sans_MS']">Craftlab</h1>
         <a href="/" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Home</a>
     </div>
 </header>
+
+<script>
+    let imageSrc = '';
+    let canvasWidth = 500;
+    let canvasHeight = 500;
+    let files = null;
+
+    function loadImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        imageSrc = e.target.result;
+
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.getElementById('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+        };
+        img.src = e.target.result;
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function applyFilter(filter) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          let r = data[i];
+          let g = data[i + 1];
+          let b = data[i + 2];
+
+
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+      };
+
+      img.src = imageSrc;
+    }
+  </script>
+
+  <style>
+    canvas {
+      border: 1px solid #000;
+      margin-top: 20px;
+    }
+  </style>
+
+
 
 <form class="container mx-auto p-5" method="POST" enctype="multipart/form-data">
     <label for="dropzone" class="mb-3 flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"> 
